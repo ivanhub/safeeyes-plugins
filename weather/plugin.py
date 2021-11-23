@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Safe Eyes is a utility to remind you to take break frequently
 # to protect your eyes from eye strain.
 
@@ -39,8 +39,7 @@ def init(ctx, safeeyes_config, plugin_config):
     api = plugin_config['api']
     location = plugin_config['location']
     if api != "" and location != "":
-        owm = pyowm.OWM(api)
-    
+    	owm = pyowm.OWM(api)
 
 def get_widget_title(break_obj):
     """
@@ -48,22 +47,18 @@ def get_widget_title(break_obj):
     """
     logging.debug('Get the weather information')
     global weather_details
-    if owm:
-        try:
-            observation = owm.weather_at_place(location)
-            weather = observation.get_weather()
-            temp = weather.get_temperature('celsius').get('temp')
-            humidity = weather.get_humidity()
-            wind_speed = weather.get_wind().get('speed')
-            weather_details = 'Temperature: %s℃\t\tHumidity: %s\tWind Speed: %s' % (temp, humidity, wind_speed)
-        except BaseException:
-            # Can be a network error
-            weather_details = None
+    mgr = owm.weather_manager()
+    observation = mgr.weather_at_place(location)
+    w = observation.weather
+    temp = w.temperature('celsius').get('temp')
+    humidity = w.humidity
+    wind_speed = w.wind().get('speed')
+    weather_details = 'Temperature: %s℃\t\tHumidity: %s\tWind Speed: %s' % (temp, humidity, wind_speed)
     if weather_details:
-        return 'Weather'
-
+    	return "Weather"
 def get_widget_content(break_obj):
     """
     Return the weather details.
     """
     return weather_details
+
